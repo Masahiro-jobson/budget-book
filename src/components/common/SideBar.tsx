@@ -1,5 +1,5 @@
-import InboxIcon from '@mui/icons-material/Inbox';
-import MailIcon from '@mui/icons-material/Mail';
+import HouseIcon from '@mui/icons-material/House';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
@@ -9,12 +9,19 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
+import { NavLink } from 'react-router-dom';
 
 // Interface is for defining class and object types
 interface SidebarProps {
   drawerWidth: number,
   mobileOpen: boolean,
   handleDrawerToggle: () => void,
+}
+
+interface menuItem {
+  text: string,
+  path: string,
+  icon: React.ComponentType,
 }
 
 // Type is has a variety of uses, such as defining variables, function parameters, and return types.
@@ -26,30 +33,54 @@ interface SidebarProps {
 
 // void means they don't have return value
 const SideBar = ({drawerWidth, mobileOpen, handleDrawerToggle}:SidebarProps) => {
-
-
-
-const drawer = (
-    <div>
-      <Toolbar />
-      {/* Devider is line */}
-      <Divider />
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
     
-    </div>
-  );
+    const MenuItems: menuItem[] = [
+        { text: 'Home', path: '/', icon: HouseIcon},
+        { text: 'Report', path: '/report', icon: LeaderboardIcon },
+    ];
+
+    const baseLinkStyle : React.CSSProperties = {
+        textDecoration: 'none',
+        // inherit means it will take parent color (here black)
+        color: 'inherit',
+        display: 'block',
+    }
+
+    const activeLinkStyle : React.CSSProperties = {
+        backgroundColor: '#e0e0e0',
+    }
+
+    const drawer = (
+        <div>
+        <Toolbar />
+        {/* Devider is line */}
+        <Divider />
+        <List>
+            {MenuItems.map((item, index) => (
+                <NavLink key={item.text} to={item.path} style={({isActive})=> {
+                    console.log("Chosen menu is", item.text, isActive)
+                    return {
+                    // ... to spread the baseLinkStyle object
+                    ...baseLinkStyle,
+                    ...(isActive ? activeLinkStyle : {})
+                    }
+                }}>
+            <ListItem key={index} disablePadding>
+                <ListItemButton>
+                <ListItemIcon>
+                    {/* in Mui icon we need to display icon as component style */}
+                    <item.icon />
+                </ListItemIcon>
+                <ListItemText primary={item.text} />
+                </ListItemButton>
+            </ListItem>
+            </NavLink>
+            ))}
+        </List>
+        <Divider />
+        
+        </div>
+    );
 
 
 
